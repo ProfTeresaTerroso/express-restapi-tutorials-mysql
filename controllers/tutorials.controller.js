@@ -3,26 +3,15 @@ const Tutorial = require('../models/tutorials.model.js');
 
 // Display list of all tutorials
 exports.findAll = (req, res) => {
-    // console.log(req.query)
-    console.log(Object.keys(req.query));
+
     if (Object.keys(req.query).length) { // this will run when your req.query is 'NOT EMPTY'
         if (!req.query.title) {
             res.status(400).json({ message: "Tutorials can only by filtered by title!" });
             return;
         }
     }
-    //     // Tutorial.getAllByTitle(req.query.title, (err, data) => {
-    //     //     if (err)
-    //     //         res.status(500).send({
-    //     //             message: err.message || "Some error occurred while retrieving tutorials."
-    //     //         });
-    //     //     else 
-    //     //         res.status(200).json(data);
-    //     //     return;
-    //     // });
-    // }
+   
     Tutorial.getAll(req.query.title, (err, data) => {
-        // Tutorial.getAll((err, data) => {
         if (err) {
             if (err.kind === "not_found")
                 res.status(404).json({
@@ -137,12 +126,10 @@ exports.findAllPublished = (req, res) => {
         // Tutorial.getAll({published: true}, (err, data) => {
         if (err)
             res.status(500).send({
-                message: err.message || "Some error occurred while retrieving tutorials."
+                message: err.message ||  "Some error occurred while retrieving tutorials."
             });
         else {
-            // console.log(data);
             res.status(200).json(data);
         }
     });
-
 };

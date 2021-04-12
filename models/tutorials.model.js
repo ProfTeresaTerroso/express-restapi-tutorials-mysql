@@ -9,26 +9,11 @@ const Tutorial = function (tutorial) {
 
 //RESULT will have an "(error, data)", meaning it will return either an error message or some sort of data
 Tutorial.getAll = (title, result) => {
-    // console.log(title)
-
-    // const existingParams = ["title"].filter(field => query[field]);
-    // // console.log(existingParams)
-    // // console.log(existingParams.map(field => `${field} LIKE ?`))
-    // // console.log(existingParams.map(field => query[field]))
-
-    // if (existingParams.length) {
-    //     queryStr += " WHERE ";
-    //     queryStr += existingParams.map(field => `${field} LIKE ?`).join(" AND ");
-    // }
-    // existingParams.map(field => `%${query[field]}%`),
-    // // existingParams.map(field => query[field]),
-
-    // Tutorial.getAll = ( result) => {
+ 
     let queryStr = "SELECT * FROM tutorials";
 
     if (title)
         queryStr += " WHERE title LIKE ?";
-    // console.log(queryStr)
 
     sql.query(queryStr, [`%${title}%`],
         (err, res) => {

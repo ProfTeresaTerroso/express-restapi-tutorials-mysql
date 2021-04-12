@@ -16,6 +16,7 @@ const dbConfig = require('../config/db.config.js');
 // module.exports = connection;
 
 let connection;
+
 function handleDisconnect() {
     // connection = mysql.createConnection(dbConfig); 
     // Recreate the connection, since the old one cannot be reused. 

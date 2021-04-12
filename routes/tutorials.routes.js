@@ -32,6 +32,8 @@ router.route('/')
 router.route('/published')
     .get(tutorialController.findAllPublished)
 
+// router('/published').get(tutorialController.findAllPublished)
+
 router.route('/:tutorialID')
     .get(tutorialController.findOne)
     .put(tutorialController.update)
