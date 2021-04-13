@@ -88,6 +88,7 @@ exports.update = (req, res) => {
         published: req.body.published ? req.body.published : false
     };
 
+    // Update Tutorial in the database
     Tutorial.updateById(req.params.tutorialID, tutorial, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
@@ -119,20 +120,19 @@ exports.delete = (req, res) => {
             return;
         } 
         res.status(200).json({ message: `Tutorial with id ${req.params.tutorialID} was successfully deleted!` });
-        // res.status(204).json({}); //204 is NO CONTENT
+        // res.status(204).json({}); //when using a status code 204, must send a NO CONTENT answer
     });
 };
 
 // Display list of all published tutorials
 exports.findAllPublished = (req, res) => {
     Tutorial.getAllPublished((err, data) => {
-        // Tutorial.getAll({published: true}, (err, data) => {
         if (err)
             res.status(500).send({
                 message: err.message ||  "Some error occurred while retrieving tutorials."
             });
         else {
-            res.status(200).json(data);
+            res.status(200).json(data); // all is OK, send response data back to client
         }
     });
 };

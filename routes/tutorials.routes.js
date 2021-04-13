@@ -16,33 +16,30 @@ router.use((req, res, next) => {
     next()
 })
 
-// router.get('/', tutorialController.findAll);
-
-// router.get('/:tutorialID', tutorialController.findOne);
-
-// router.delete('/:tutorialID', tutorialController.delete);
-
-// router.post('/', tutorialController.create);
-
+// Use router.route() to avoid duplicate route naming and thus typing errors
+// This approach re-uses the single 'tutorials/' path and adds handlers for various HTTP methods
 router.route('/')
     .get(tutorialController.findAll) // this route will capture requests with query strings
     .post(tutorialController.create);
 
+// // Above is the same as
+// router.get('/', tutorialController.findAll);
+// router.post('/', tutorialController.create);
+
 //needs to be BEFORE route /:tutorialID (otherwise, "published" string will be treated as an ID)
 router.route('/published')
     .get(tutorialController.findAllPublished)
-
-// router('/published').get(tutorialController.findAllPublished)
 
 router.route('/:tutorialID')
     .get(tutorialController.findOne)
     .put(tutorialController.update)
     .delete(tutorialController.delete);
 
-
+// this route is only hitted when none of the above is captured
+// 'all' means that acceptes all HTTP methods (verbs)
 router.all('*', function (req, res) {
     //send an predefined error message 
-    res.status(404).json({ message: 'TUTORIALS: what???' });
+    res.status(404).json({ message: 'TUTORIALS: invalid request' });
 })
 
 module.exports = router;

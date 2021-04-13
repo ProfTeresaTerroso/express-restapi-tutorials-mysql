@@ -11,7 +11,7 @@ const Tutorial = function (tutorial) {
 Tutorial.getAll = (title, result) => {
  
     let queryStr = "SELECT * FROM tutorials";
-
+    // filter data IF title variable is not null
     if (title)
         queryStr += " WHERE title LIKE ?";
 
@@ -21,6 +21,7 @@ Tutorial.getAll = (title, result) => {
                 result(err, null);
                 return;
             }
+            // not found Tutorials within the specified title filter: setup a new error property 'kind'
             if (res.length === 0) {
                 result({ kind: "not_found" }, null);
                 return;
@@ -35,16 +36,14 @@ Tutorial.create = (newTutorial, result) => {
             result(err, null);
             return;
         }
-
         //console.log("created tutorial: ", { id: res.insertId, newTutorial });
         result(null, res);
     });
 };
 
 Tutorial.findById = (id, result) => {
-    // sql.query(`SELECT * FROM tutorials WHERE id = ${id}`, (err, res) => {
+    // AVOID building queries like this: `SELECT * FROM tutorials WHERE id = ${id}`
     sql.query('SELECT * FROM tutorials WHERE id = ?', [id], (err, res) => {
-        //console.log(err, res)
         if (err) {
             result(err, null);
             return;
@@ -55,25 +54,32 @@ Tutorial.findById = (id, result) => {
             return;
         }
 
-        // not found Tutorial with the id: setup a new error property 'kind'
+        // not found Tutorial with the specified ID: setup a new error property 'kind'
         result({ kind: "not_found" }, null);
     });
 };
 
-Tutorial.updateById = (id, tutorial, result) => {
-    //console.log(tutorial, id)
-    let query = 'UPDATE tutorials SET title = ?, description = ?, published = ? WHERE id = ?';
-    sql.query(
+Tutorial.updateById = (idTutorial, tutorial, result) => {
+
+    // OR let query = 'UPDATE tutorials SET title = ?, description = ?, published = ? WHERE id = ?';
+    let query = 'UPDATE tutorials SET ? WHERE ?';
+
+    let q = sql.query(
         query,
-        [tutorial.title, tutorial.description, tutorial.published, id],
+        // OR [tutorial.title, tutorial.description, tutorial.published, id]
+        [tutorial, {id: idTutorial}], // objects are turned into key = 'val' pairs for each enumerable property
         (err, res) => {
+            
+            //console.log(q.sql); // to check the query string
+
             if (err) {
-                // console.log("error: ", err);
                 result(err, null);
                 return;
             }
-            // console.log(res.changedRows + " record(s) updated");
-            // not found Tutorial with the id
+            // res.affectedRows: number of selected rows to update
+            // res.changedRows: number of effectively updated rows
+            
+            // not found Tutorials with the specified ID: setup a new error property 'kind'
             if (res.affectedRows == 0) {
                 result({ kind: "not_found" }, null);
                 return;
@@ -89,10 +95,9 @@ Tutorial.remove = (id, result) => {
             result(null, err);
             return;
         }
-        console.log(res.affectedRows)
         // affectedRows informs about the number of record(s) deleted
         if (res.affectedRows == 0) {
-            // not found Tutorial with the id
+            // not found Tutorials with the specified ID: setup a new error property 'kind'
             result({ kind: "not_found" }, null);
             return;
         }
@@ -111,16 +116,6 @@ Tutorial.getAllPublished = result => {
     });
 };
 
-
-Tutorial.getAllByTitle = (title, result) => {
-    sql.query("SELECT * FROM tutorials WHERE title LIKE ?", `%${title}%`, (err, res) => {
-        if (err) {
-            result(err, null);
-            return;
-        }
-        result(null, res);
-    });
-};
 
 // Export model
 module.exports = Tutorial;
