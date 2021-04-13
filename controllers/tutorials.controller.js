@@ -15,21 +15,20 @@ exports.findAll = (req, res) => {
         if (err) {
             if (err.kind === "not_found")
                 res.status(404).json({
-                    message: `Not found Tutorial with specified filter.`
+                    message: 'Not found Tutorial with specified filter.'
                 });
             else
                 res.status(500).send({
                     message: err.message || "Some error occurred while retrieving tutorials."
                 });
         }
-
         else
-            res.status(200).json(data);
+            res.status(200).json(data); // all is OK, send response data back to client
     });
 
 };
 
-// Handle tutorial create on POST
+// Handle tutorial creation on POST
 exports.create = (req, res) => {
     // Validate request
     if (!req.body || !req.body.title) {
@@ -37,7 +36,7 @@ exports.create = (req, res) => {
         return;
     }
 
-    // Create a Tutorial
+    // Create a Tutorial object
     const tutorial = {
         title: req.body.title,
         description: req.body.description,
@@ -50,7 +49,11 @@ exports.create = (req, res) => {
             res.status(500).json({
                 message: err.message || "Some error occurred while creating the Tutorial."
             });
-        else res.status(201).json({ message: "New tutorial created.", location: "/tutorials/" + data.insertId });
+        else{
+            // all is OK, send new tutorial ID in the response
+            res.status(201).json({ message: "New tutorial created.", location: "/tutorials/" + data.insertId });
+        } 
+            
     });
 };
 
@@ -67,7 +70,7 @@ exports.findOne = (req, res) => {
                     message: `Error retrieving Tutorial with id ${req.params.tutorialID}.`
                 });
         } else
-            res.status(200).json(data);
+            res.status(200).json(data); // all is OK, send response data back to client
     });
 };
 
@@ -78,7 +81,7 @@ exports.update = (req, res) => {
         return;
     }
 
-    // Create a Tutorial
+    // Create a Tutorial object
     const tutorial = {
         title: req.body.title,
         description: req.body.description,
