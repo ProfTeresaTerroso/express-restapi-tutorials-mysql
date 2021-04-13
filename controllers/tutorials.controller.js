@@ -77,7 +77,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     // Validate request
     if (!req.body || !req.body.title) {
-        res.status(400).json({ message: "Request can not be empty!" });
+        res.status(400).json({ message: "Request must have specify the new title!" });
         return;
     }
 
